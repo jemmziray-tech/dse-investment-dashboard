@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE Insight - Intelligent Investment Analytics Platform</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Scripts (Loaded in head so data is available) -->
+    <script src="assets/js/data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- HEADER -->
+        <header class="animate-fade" style="animation-delay: 0.1s;">
+            <div class="brand">
+                <h1><span>DSE</span> Insight</h1>
+                <p>Intelligent Investment Analytics Platform</p>
+                <p style="font-size: 0.75rem; margin-top: 0.25rem;">Report: <span id="display-date">...</span></p>
+            </div>
+            <div class="market-status">
+                <div class="clock" id="live-clock">--:--:-- EAT</div>
+                <div class="status-badge" id="market-status-badge">
+                    <div class="indicator"></div>
+                    <span id="market-status-text">Checking...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PLAIN ENGLISH MARKET SUMMARY -->
+        <div class="glass-card market-plain-english animate-fade" style="animation-delay: 0.15s; margin-bottom: 2.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="font-size: 2rem;">🤖</div>
+                <div>
+                    <h3 style="color: var(--accent-gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">Market in Plain English</h3>
+                    <p id="plain-english-text" style="font-size: 1.1rem; color: var(--text-primary); line-height: 1.5;">Analyzing today's market data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="summary-grid animate-fade" style="animation-delay: 0.2s;">
+            <div class="glass-card stat-card">
+                <div class="label">Total Turnover</div>
+                <div class="value" id="sum-turnover">0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="label">Total Volume</div>
+                <div class="value" id="sum-volume">0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="label">Total Deals</div>
+                <div class="value" id="sum-deals">0</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="label">Market Cap</div>
+                <div class="value" id="sum-mcap">0</div>
+            </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <section class="charts-grid animate-fade" style="animation-delay: 0.3s;">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>Market Capitalization by Sector</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="sectorChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>Top Traded (Volume)</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="volumeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI INSIGHTS & TOP MOVERS -->
+        <section class="animate-fade" style="animation-delay: 0.4s;">
+            <div class="section-header">
+                <h2>Market Movers & AI Insights</h2>
+            </div>
+            <div class="movers-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--status-up);">Top Gainers</h3>
+                    <div id="top-gainers-list"></div>
+                </div>
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--status-down);">Top Losers</h3>
+                    <div id="top-losers-list"></div>
+                </div>
+                <div class="glass-card" style="border: 1px solid var(--accent-gold);">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--accent-gold); display: flex; justify-content: space-between;">
+                        <span>AI Trend Predictor 🤖</span>
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Machine Learning forecasts for the next 7 days based on momentum and volume.</p>
+                    <div id="ai-insights-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BEGINNER HUB (Calculator & Guide) -->
+        <section class="beginner-hub-grid animate-fade" style="animation-delay: 0.45s;">
+            <!-- Calculator -->
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>Investment Calculator</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Want to invest? See how many shares you can buy right now.</p>
+                
+                <div class="calculator-form">
+                    <div class="input-group">
+                        <label>I want to invest (TZS)</label>
+                        <input type="number" id="calc-amount" placeholder="e.g. 100000" min="1000">
+                    </div>
+                    <div class="input-group">
+                        <label>In this company</label>
+                        <select id="calc-company">
+                            <option value="">Select a company...</option>
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="calc-result" class="calc-result hidden">
+                    <!-- Result inserted via JS -->
+                </div>
+            </div>
+
+            <!-- DSE 101 Guide -->
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>DSE 101: How to Start</h2>
+                </div>
+                <div class="guide-steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <h4>Find a Licensed Broker</h4>
+                            <p>You can't buy shares directly. You must use a broker licensed by the DSE (e.g., Orbit Securities, Vertex Intl, etc).</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <h4>Open a CSD Account</h4>
+                            <p>Your broker will help you open a Central Depository System (CSD) account where your shares are safely held electronically.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <h4>Look for Blue Chips ⭐</h4>
+                            <p>If you're new, look for the ⭐ badge in the table below. These are large, stable companies that often pay dividends.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EQUITY MARKET TABLE -->
+        <section class="animate-fade" style="animation-delay: 0.5s;">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>Equity Market (Normal Board)</h2>
+                </div>
+                <div class="table-container">
+                    <table id="equities-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="symbol">Symbol</th>
+                                <th data-sort="name">Company Name</th>
+                                <th data-sort="sector">Sector</th>
+                                <th data-sort="close" class="text-right">Price (TZS)</th>
+                                <th data-sort="changePct" class="text-right">Change</th>
+                                <th data-sort="mlTrend" class="text-center tooltip-trigger" data-tooltip="AI forecast based on momentum/volume. Not financial advice.">AI Prediction 🤖</th>
+                                <th data-sort="volume" class="text-right tooltip-trigger" data-tooltip="Total number of shares traded today">Volume</th>
+                                <th data-sort="turnover" class="text-right tooltip-trigger" data-tooltip="Total money (TZS) that changed hands today">Turnover</th>
+                                <th data-sort="mcapBillion" class="text-right tooltip-trigger" data-tooltip="Market Capitalization: Total value of the company in Billions">MCAP (TZS 'B) ↓</th>
+                            </tr>
+                        </thead>
+                        <tbody id="equities-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- GOVERNMENT BONDS -->
+        <section class="animate-fade" style="animation-delay: 0.6s;">
+            <div class="glass-card">
+                <div class="section-header">
+                    <h2>Government Bonds</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="tooltip-trigger" data-tooltip="How long until the government pays back the bond (e.g. 10 years)">Tenor</th>
+                                <th>Bond Number</th>
+                                <th class="text-right tooltip-trigger" data-tooltip="The annual interest rate paid to you">Coupon Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bonds-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="animate-fade" style="animation-delay: 0.7s;">
+            <p>DSE Insight &copy; 2026 | Built by <a href="https://github.com/jemmziray-tech" target="_blank">John Elifuraha Mziray</a></p>
+            <p style="margin-top: 0.5rem; opacity: 0.7;">Disclaimer: Educational purpose only. Data sourced from dse.co.tz via scraper.</p>
+        </footer>
+
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
