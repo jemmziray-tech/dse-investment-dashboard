@@ -10,7 +10,7 @@
 
 **DSE Insight** is a premium, zero-cost, serverless web application that transforms raw data from the Dar es Salaam Stock Exchange (DSE) into a stunning, beginner-friendly analytics dashboard powered by Machine Learning.
 
-[Explore the Live Dashboard](https://jemmziray-tech.github.io/dse-investment-dashboard) *(Insert your live URL here)*
+[Explore the Live Dashboard](https://jemmziray-tech.github.io/dse-investment-dashboard)
 
 ---
 </div>
