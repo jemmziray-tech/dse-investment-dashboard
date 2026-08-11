@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE Insight | Fixed Income</title>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar injected here by components.js -->
+    <div id="navbar-container"></div>
+    
+    <div class="container">
+
+        <header class="dashboard-header animate-fade">
+            <div class="brand">
+                <h1>Fixed <span>Income</span></h1>
+                <p>Government and Corporate Bonds Data</p>
+            </div>
+        </header>
+
+        <section class="animate-fade" style="animation-delay: 0.2s;">
+            <div class="glass-card table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tenor</th>
+                            <th>Coupon (%)</th>
+                            <th class="text-right">Yield (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bonds-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- Footer injected here by components.js -->
+    <div id="footer-container"></div>
+
+    <!-- Data & Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

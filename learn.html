@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE Insight | Education Center</title>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar injected here by components.js -->
+    <div id="navbar-container"></div>
+    
+    <div class="container">
+
+        <header class="dashboard-header animate-fade">
+            <div class="brand">
+                <h1>Education <span>Center</span></h1>
+                <p>Tools and guides for new investors</p>
+            </div>
+        </header>
+
+        <div class="movers-grid animate-fade" style="animation-delay: 0.2s;">
+            <!-- PLAIN ENGLISH -->
+            <div class="glass-card" style="grid-column: span 2;">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--accent-blue);">Market in Plain English</h3>
+                <div id="plain-english-text" style="font-size: 1.05rem; line-height: 1.8;">
+                    Generating summary...
+                </div>
+            </div>
+
+            <!-- DSE 101 -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--accent-gold);">DSE 101: How to Start</h3>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <p style="margin-bottom: 1rem;"><strong>1. Find a Broker</strong><br>You cannot buy shares directly from the DSE. You need a Licensed Dealing Member (broker) like Orbit Securities, CRDB, or NMB.</p>
+                    <p style="margin-bottom: 1rem;"><strong>2. Open a CSD Account</strong><br>Your broker will help you open a Central Depository System account. This is where your digital shares are stored safely.</p>
+                    <p><strong>3. Look for Blue Chips <i data-lucide="shield" style="color:var(--accent-gold); width:14px; height:14px;"></i></strong><br>Beginners should look for "Blue Chip" companies (MCAP > 1 Trillion TZS). They are usually safer, well-established companies.</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="animate-fade" style="animation-delay: 0.4s;">
+            <div class="section-header">
+                <h2>Shares Calculator</h2>
+            </div>
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: center;">Find out how many shares you can afford to buy today.</p>
+                <form id="investment-form">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="capital" style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem;">Your Budget (TZS)</label>
+                        <input type="number" id="capital" placeholder="e.g. 50000" style="width: 100%; padding: 0.8rem; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); color: #fff; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="calc-ticker" style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem;">Company</label>
+                        <select id="calc-ticker" style="width: 100%; padding: 0.8rem; border-radius: 6px; background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); color: #fff; font-size: 1rem;">
+                            <option value="">Select a company...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Calculate</button>
+                </form>
+                <div id="calc-results" class="calc-result hidden" style="margin-top: 1.5rem; text-align: center; padding: 1rem; background: rgba(0,0,0,0.1); border-radius: 8px;">
+                    <!-- Results appear here -->
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- Footer injected here by components.js -->
+    <div id="footer-container"></div>
+
+    <!-- Data & Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

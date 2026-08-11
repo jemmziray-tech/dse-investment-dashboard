@@ -9,15 +9,30 @@ let sortAsc = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     initClock();
-    checkMarketStatus();
-    populateSummary();
-    generatePlainEnglish();
-    populateMovers();
-    populateAIInsights();
-    renderEquitiesTable();
-    renderBondsTable();
-    initCharts();
-    initCalculator();
+    if(document.getElementById('market-status')) checkMarketStatus();
+    
+    // Overview Page
+    if(document.getElementById('summary-grid')) populateSummary();
+    if(document.getElementById('plain-english-text')) generatePlainEnglish();
+    if(document.getElementById('top-gainers-list')) populateMovers();
+    if(document.getElementById('ai-insights-list')) populateAIInsights();
+    
+    // Equities Page
+    if(document.getElementById('equities-table-body')) renderEquitiesTable();
+    
+    // Bonds Page
+    if(document.getElementById('bonds-table-body')) renderBondsTable();
+    
+    // Charts (Overview or Analytics)
+    if(document.getElementById('volumeChart')) initCharts();
+    
+    // Learn Page
+    if(document.getElementById('investment-form')) initCalculator();
+    
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
     // Setup sorting listeners
     document.querySelectorAll('#equities-table th[data-sort]').forEach(th => {
@@ -95,9 +110,9 @@ function getChangeBgClass(change) {
 }
 
 function getChangeSymbol(change) {
-    if (change > 0) return '▲';
-    if (change < 0) return '▼';
-    return '−';
+    if (change > 0) return '<i data-lucide="trending-up"></i>';
+    if (change < 0) return '<i data-lucide="trending-down"></i>';
+    return '<i data-lucide="minus"></i>';
 }
 
 function populateMovers() {
@@ -109,12 +124,12 @@ function populateMovers() {
     
     gainersList.innerHTML = gainers.length ? gainers.map(g => createMoverRow(g, 'up')).join('') : '<div class="mover-item">No gainers today</div>';
     losersList.innerHTML = losers.length ? losers.map(l => createMoverRow(l, 'down')).join('') : '<div class="mover-item">No losers today</div>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function createMoverRow(item, type) {
-    const symbolClass = type === 'up' ? 'up' : 'down';
     const bgClass = type === 'up' ? 'bg-up' : 'bg-down';
-    const arrow = type === 'up' ? '▲' : '▼';
+    const icon = type === 'up' ? 'trending-up' : 'trending-down';
     
     return `
         <div class="mover-item">
@@ -124,14 +139,14 @@ function createMoverRow(item, type) {
             </div>
             <div class="mover-stats">
                 <div class="price">${formatMoney(item.close)}</div>
-                <div class="change ${bgClass}">${arrow} ${Math.abs(item.changePct).toFixed(2)}%</div>
+                <div class="change ${bgClass}"><i data-lucide="${icon}"></i> ${Math.abs(item.changePct).toFixed(2)}%</div>
             </div>
         </div>
     `;
 }
 
 function renderEquitiesTable() {
-    const tbody = document.getElementById('equities-body');
+    const tbody = document.getElementById('equities-table-body');
     let data = [...DSE_DATA.equities];
     
     data.sort((a, b) => {
@@ -150,12 +165,12 @@ function renderEquitiesTable() {
         
         // Define Blue Chip (e.g. MCAP > 1000 Billion TZS)
         const isBlueChip = row.mcapBillion >= 1000;
-        const nameHtml = row.name + (isBlueChip ? ' <span class="blue-chip tooltip-trigger" data-tooltip="Blue Chip: A large, well-established, and financially sound company.">⭐</span>' : '');
+        const nameHtml = row.name + (isBlueChip ? ' <span class="blue-chip tooltip-trigger" data-tooltip="Blue Chip"><i data-lucide="shield"></i></span>' : '');
 
         // AI Prediction Badge
-        let aiBadge = `<span class="ai-badge neutral">⚪ Neutral</span>`;
-        if (row.mlTrend === "Bullish") aiBadge = `<span class="ai-badge bullish">🟢 Bullish <small>(${row.mlConfidence}%)</small></span>`;
-        if (row.mlTrend === "Bearish") aiBadge = `<span class="ai-badge bearish">🔴 Bearish <small>(${row.mlConfidence}%)</small></span>`;
+        let aiBadge = `<span class="ai-badge neutral"><i data-lucide="minus"></i> Neutral</span>`;
+        if (row.mlTrend === "Bullish") aiBadge = `<span class="ai-badge bullish"><i data-lucide="trending-up"></i> Bullish <small>(${row.mlConfidence}%)</small></span>`;
+        if (row.mlTrend === "Bearish") aiBadge = `<span class="ai-badge bearish"><i data-lucide="trending-down"></i> Bearish <small>(${row.mlConfidence}%)</small></span>`;
 
         return `
             <tr>
@@ -173,13 +188,14 @@ function renderEquitiesTable() {
     }).join('');
     
     // Update header icons
-    document.querySelectorAll('#equities-table th').forEach(th => th.innerHTML = th.innerHTML.replace(' ↑', '').replace(' ↓', ''));
+    document.querySelectorAll('#equities-table th i').forEach(i => i.remove());
     const activeTh = document.querySelector(`#equities-table th[data-sort="${sortCol}"]`);
-    if (activeTh) activeTh.innerHTML += sortAsc ? ' ↑' : ' ↓';
+    if (activeTh) activeTh.innerHTML += sortAsc ? ' <i data-lucide="chevron-up"></i>' : ' <i data-lucide="chevron-down"></i>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function renderBondsTable() {
-    const tbody = document.getElementById('bonds-body');
+    const tbody = document.getElementById('bonds-table-body');
     tbody.innerHTML = DSE_DATA.bonds.map(b => `
         <tr>
             <td>${b.tenor}</td>
@@ -284,7 +300,7 @@ function populateAIInsights() {
             html += `
                 <div class="mover-item" style="padding: 0.5rem 0;">
                     <div class="mover-info"><span class="ticker">${b.symbol}</span></div>
-                    <div class="mover-stats"><span class="ai-badge bullish">🟢 ${b.mlConfidence}%</span></div>
+                    <div class="mover-stats"><span class="ai-badge bullish"><i data-lucide="trending-up"></i> ${b.mlConfidence}%</span></div>
                 </div>
             `;
         });
@@ -293,6 +309,7 @@ function populateAIInsights() {
     }
     
     list.innerHTML = html;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function generatePlainEnglish() {
@@ -329,36 +346,80 @@ function generatePlainEnglish() {
 }
 
 function initCalculator() {
-    const companySelect = document.getElementById('calc-company');
-    const amountInput = document.getElementById('calc-amount');
-    const resultDiv = document.getElementById('calc-result');
+    const calcForm = document.getElementById('investment-form');
+    if (!calcForm) return;
 
-    // Populate dropdown (only equities with price > 0)
+    // Populate dropdown
+    const select = document.getElementById('calc-ticker');
     let availableEquities = DSE_DATA.equities.filter(e => e.close > 0).sort((a,b) => a.name.localeCompare(b.name));
-    companySelect.innerHTML += availableEquities.map(e => `<option value="${e.symbol}">${e.name} (${e.symbol})</option>`).join('');
+    select.innerHTML += availableEquities.map(e => `<option value="${e.symbol}">${e.name} (${e.symbol})</option>`).join('');
 
-    function calculate() {
-        const amount = parseFloat(amountInput.value);
-        const symbol = companySelect.value;
+    calcForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const capital = parseFloat(document.getElementById('capital').value);
+        const ticker = select.value;
         
-        if (!amount || amount <= 0 || !symbol) {
-            resultDiv.className = 'calc-result hidden';
-            return;
-        }
+        const eq = DSE_DATA.equities.find(e => e.symbol === ticker);
+        if(!eq || isNaN(capital) || capital <= 0) return;
+        
+        const shares = Math.floor(capital / eq.close);
+        const actualCost = shares * eq.close;
+        const remainder = capital - actualCost;
+        
+        let resHtml = `
+            <p>With <strong>TZS ${formatMoney(capital)}</strong>, you can afford:</p>
+            <div style="font-size: 2rem; color: var(--accent-gold); font-weight: 700; margin: 1rem 0;">
+                ${shares.toLocaleString()} Shares
+            </div>
+            <p>of ${eq.name} (${ticker}) at TZS ${formatMoney(eq.close)} each.</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">
+                Total cost: TZS ${formatMoney(actualCost)}<br>
+                Change left over: TZS ${formatMoney(remainder)}
+            </p>
+            <p style="color: var(--status-down); font-size: 0.8rem; margin-top: 0.5rem;">
+                *Note: This excludes broker fees and CSDR fees (usually ~2% total).
+            </p>
+        `;
+        
+        document.getElementById('calc-results').innerHTML = resHtml;
+    });
+}
 
-        const company = DSE_DATA.equities.find(e => e.symbol === symbol);
-        const shares = Math.floor(amount / company.close);
-        const remainder = amount - (shares * company.close);
+// --- Professional Features ---
 
-        if (shares > 0) {
-            resultDiv.innerHTML = `You can buy exactly <strong>${formatMoney(shares)} shares</strong> of ${company.symbol} at today's price (TZS ${formatMoney(company.close)}). <br><span style="font-size:0.85em; opacity:0.8;">You would have TZS ${formatMoney(remainder)} left over. (Note: Excludes broker fees)</span>`;
-            resultDiv.className = 'calc-result';
-        } else {
-            resultDiv.innerHTML = `TZS ${formatMoney(amount)} is not enough to buy 1 share. You need at least TZS ${formatMoney(company.close)}.`;
-            resultDiv.className = 'calc-result';
-        }
-    }
-
-    amountInput.addEventListener('input', calculate);
-    companySelect.addEventListener('change', calculate);
+function exportEquitiesCSV() {
+    if (!DSE_DATA || !DSE_DATA.equities) return;
+    
+    // Define headers
+    const headers = ["Symbol", "Name", "Sector", "Price (TZS)", "Change (%)", "Volume", "Turnover (TZS)", "Market Cap (TZS B)", "AI Trend", "AI Confidence"];
+    
+    // Map rows
+    const rows = DSE_DATA.equities.map(e => [
+        e.symbol,
+        `"${e.name}"`,
+        e.sector,
+        e.close,
+        e.changePct,
+        e.volume,
+        e.turnover,
+        e.mcapBillion,
+        e.mlTrend,
+        e.mlConfidence
+    ]);
+    
+    // Combine
+    const csvContent = [
+        headers.join(","),
+        ...rows.map(r => r.join(","))
+    ].join("\n");
+    
+    // Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `DSE_Equities_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

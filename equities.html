@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE Insight | Equities</title>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar injected here by components.js -->
+    <div id="navbar-container"></div>
+    
+    <div class="container">
+
+        <header class="dashboard-header animate-fade">
+            <div class="brand">
+                <h1>Equities <span>Market</span></h1>
+                <p>Live trading data for all listed companies</p>
+            </div>
+            <button class="btn-primary" onclick="exportEquitiesCSV()">
+                <i data-lucide="download"></i> Export to CSV
+            </button>
+        </header>
+        
+        <section class="animate-fade" style="animation-delay: 0.2s;">
+            <div class="glass-card table-container">
+                <table class="data-table" id="equities-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="symbol">Symbol</th>
+                            <th data-sort="name">Company Name</th>
+                            <th data-sort="sector">Sector</th>
+                            <th data-sort="close" class="text-right">Price (TZS)</th>
+                            <th data-sort="changePct" class="text-right">Change</th>
+                            <th data-sort="mlTrend" class="text-center tooltip-trigger" data-tooltip="AI forecast based on momentum/volume. Not financial advice.">AI Prediction</th>
+                            <th data-sort="volume" class="text-right tooltip-trigger" data-tooltip="Total number of shares traded today">Volume</th>
+                            <th data-sort="turnover" class="text-right tooltip-trigger" data-tooltip="Total money (TZS) that changed hands today">Turnover</th>
+                            <th data-sort="mcapBillion" class="text-right tooltip-trigger" data-tooltip="Market Capitalization: Total value of the company in Billions">MCAP (TZS 'B) <i data-lucide="chevron-down"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="equities-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- Footer injected here by components.js -->
+    <div id="footer-container"></div>
+
+    <!-- Data & Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
