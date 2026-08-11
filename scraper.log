@@ -5,3 +5,10 @@
 2026-07-20 20:43:22,847 - INFO - Saved C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\raw\dse_table_2_20260720_204322.csv
 2026-07-20 20:43:22,848 - INFO - Saved C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\raw\dse_table_3_20260720_204322.csv
 2026-07-20 20:43:22,849 - INFO - Saved C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\raw\dse_table_4_20260720_204322.csv
+2026-08-12 00:52:16,715 - INFO - Successfully fetched https://dse.co.tz
+2026-08-12 00:52:16,771 - INFO - 5 tables extracted
+2026-08-12 00:52:16,779 - INFO - Appended to C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\historical\dse_table_0_historical.csv
+2026-08-12 00:52:16,781 - INFO - Appended to C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\historical\dse_table_1_historical.csv
+2026-08-12 00:52:16,782 - INFO - Appended to C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\historical\dse_table_2_historical.csv
+2026-08-12 00:52:16,783 - INFO - Appended to C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\historical\dse_table_3_historical.csv
+2026-08-12 00:52:16,784 - INFO - Appended to C:\Users\jemmz\OneDrive\Desktop\projects\dse-investment-dashboard\data\historical\dse_table_4_historical.csv

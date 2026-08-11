@@ -29,7 +29,7 @@ except ImportError:
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw")
+HISTORICAL_DATA_PATH = os.path.join(BASE_DIR, "data", "historical")
 OUTPUT_PATH   = os.path.join(BASE_DIR, "assets", "js", "data.js")
 
 # ── Company Metadata (sector + full name) ─────────────────────────────────────
@@ -103,17 +103,23 @@ def latest_csv(pattern: str) -> str | None:
 
 
 def date_from_path(path: str) -> tuple[str, str]:
-    m = re.search(r"(\d{8})_\d{6}", path)
-    if m:
-        dt = datetime.strptime(m.group(1), "%Y%m%d")
-        return dt.strftime("%Y-%m-%d"), dt.strftime("%d %B %Y")
+    # We now read the Date directly from the dataframe, so this is just a fallback.
     now = datetime.now()
     return now.strftime("%Y-%m-%d"), now.strftime("%d %B %Y")
 
 # ── Parsers ───────────────────────────────────────────────────────────────────
 
-def parse_equities(path: str) -> list:
+def parse_equities(path: str) -> tuple[list, str, str]:
     df = pd.read_csv(path)
+    if 'Date' in df.columns:
+        latest_date = df['Date'].max()
+        df = df[df['Date'] == latest_date]
+        dt = datetime.strptime(latest_date, "%Y-%m-%d")
+        report_date = dt.strftime("%Y-%m-%d")
+        display_date = dt.strftime("%d %B %Y")
+    else:
+        report_date, display_date = date_from_path(path)
+        
     rows = []
     for _, row in df.iterrows():
         sym = str(row.get("Symbol", "")).strip()
@@ -135,11 +141,17 @@ def parse_equities(path: str) -> list:
             "volume":      safe_int(row.get("Volume", 0)),
             "mcapBillion": safe_float(row.get("MCAP (TZS 'B)", 0)),
         })
-    return rows
+    return rows, report_date, display_date
 
 
 def parse_bonds(path: str) -> list:
+    if not os.path.exists(path):
+        return []
     df = pd.read_csv(path)
+    if 'Date' in df.columns:
+        latest_date = df['Date'].max()
+        df = df[df['Date'] == latest_date]
+        
     rows = []
     for _, row in df.iterrows():
         tenor = str(row.get("Tenor", "")).strip()
@@ -179,19 +191,18 @@ def main():
     print("\n🔄  DSE Insight — Data Bridge")
     print("─" * 44)
 
-    eq_file   = latest_csv("dse_table_3_*.csv")
-    bond_file = latest_csv("dse_table_4_*.csv")
+    eq_file   = os.path.join(HISTORICAL_DATA_PATH, "dse_table_3_historical.csv")
+    bond_file = os.path.join(HISTORICAL_DATA_PATH, "dse_table_4_historical.csv")
 
-    if not eq_file:
-        print("❌  No equity CSV found in data/raw/. Run the scraper first.")
+    if not os.path.exists(eq_file):
+        print("❌  No historical equity CSV found. Run the scraper first.")
         sys.exit(1)
 
     print(f"📄  Equity : {os.path.basename(eq_file)}")
-    print(f"📄  Bonds  : {os.path.basename(bond_file) if bond_file else 'not found'}")
+    print(f"📄  Bonds  : {os.path.basename(bond_file) if os.path.exists(bond_file) else 'not found'}")
 
-    report_date, display_date = date_from_path(eq_file)
-    equities = parse_equities(eq_file)
-    bonds    = parse_bonds(bond_file) if bond_file else []
+    equities, report_date, display_date = parse_equities(eq_file)
+    bonds    = parse_bonds(bond_file)
     summary  = compute_summary(equities)
 
     print("🤖  Running AI Trend Predictor...")

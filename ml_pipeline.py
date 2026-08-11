@@ -27,13 +27,7 @@ except ImportError:
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw")
-
-def date_from_path(path: str) -> datetime:
-    m = re.search(r"(\d{8})_\d{6}", path)
-    if m:
-        return datetime.strptime(m.group(1), "%Y%m%d")
-    return datetime.now()
+HISTORICAL_DATA_PATH = os.path.join(BASE_DIR, "data", "historical", "dse_table_3_historical.csv")
 
 def parse_change(raw) -> float:
     try:
@@ -51,28 +45,21 @@ def safe_float(val) -> float:
     except: return 0.0
 
 def load_historical_data() -> pd.DataFrame:
-    """Loads and combines all available equity CSVs into a single time-series DataFrame."""
-    files = glob.glob(os.path.join(RAW_DATA_PATH, "dse_table_3_*.csv"))
-    if not files:
+    """Loads the historical equity CSV into a time-series DataFrame."""
+    if not os.path.exists(HISTORICAL_DATA_PATH):
         return pd.DataFrame()
 
-    all_data = []
-    for f in files:
-        dt = date_from_path(f)
-        try:
-            df = pd.read_csv(f)
-            df['Date'] = dt
-            all_data.append(df)
-        except Exception as e:
-            continue
+    try:
+        df = pd.read_csv(HISTORICAL_DATA_PATH)
+    except Exception as e:
+        print(f"Error reading historical data: {e}")
+        return pd.DataFrame()
             
-    if not all_data:
+    if df.empty:
         return pd.DataFrame()
 
-    combined = pd.concat(all_data, ignore_index=True)
-    
     # Clean and standardize columns
-    combined = combined.rename(columns={
+    combined = df.rename(columns={
         'Symbol': 'symbol',
         'Close': 'close',
         'Volume': 'volume',

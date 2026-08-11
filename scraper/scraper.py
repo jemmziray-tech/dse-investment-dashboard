@@ -26,18 +26,17 @@ BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 
-RAW_DATA_PATH = os.path.join(
+HISTORICAL_DATA_PATH = os.path.join(
     BASE_DIR,
     "data",
-    "raw"
+    "historical"
 )
 
 
 os.makedirs(
-    RAW_DATA_PATH,
+    HISTORICAL_DATA_PATH,
     exist_ok=True
 )
-
 
 # Change this when connecting to the real DSE endpoint
 DSE_URL = "https://dse.co.tz"
@@ -134,33 +133,41 @@ def extract_tables(html):
 
 
 # -----------------------------
-# Save Raw Data
+# Save Data in Time-Series
 # -----------------------------
 
 def save_dataframe(
         dataframe,
         filename
 ):
-
-    timestamp = datetime.now().strftime(
-        "%Y%m%d_%H%M%S"
-    )
+    
+    # Add a 'Date' column if not present, to keep track of the time series
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    
+    # Only inject date if it's not already there
+    if 'Date' not in dataframe.columns:
+        # Insert at the beginning
+        dataframe.insert(0, 'Date', date_str)
 
 
     file_path = os.path.join(
-        RAW_DATA_PATH,
-        f"{filename}_{timestamp}.csv"
+        HISTORICAL_DATA_PATH,
+        f"{filename}_historical.csv"
     )
 
+    # If file exists, append without headers. If not, write with headers.
+    file_exists = os.path.isfile(file_path)
 
     dataframe.to_csv(
         file_path,
-        index=False
+        mode='a',
+        index=False,
+        header=not file_exists
     )
 
 
     logging.info(
-        f"Saved {file_path}"
+        f"Appended to {file_path}"
     )
 
 
